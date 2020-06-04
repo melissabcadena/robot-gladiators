@@ -1,3 +1,4 @@
+
 var fightOrSkip = function() {
     // ask user if they'd like to fight or skip using  function
     var promptFight = window.prompt('Would you like FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
@@ -17,7 +18,7 @@ var fightOrSkip = function() {
       if (confirmSkip) {
         window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
         // subtract money from playerMoney for skipping
-        playerInfo.playerMoney = playerInfo.money - 10;
+        playerInfo.money = playerInfo.money - 10;
         return true;
       }
       else {
@@ -27,7 +28,6 @@ var fightOrSkip = function() {
   }
 
 var fight = function (enemy) {
-
     //keep track of who goes first
     var isPlayerTurn = true;
 
@@ -132,13 +132,24 @@ var startGame = function() {
 
 // function to end the entire game 
 var endGame = function() {
+
+    window.alert("The game has now ended. Let's see how you did!");
+
+    // check localStorage for high score, if it's not there, use 0
+    var highScore = localStorage.getItem("highscore");
+    if (highScore === null) {
+        highScore = 0;
+    }
     
-    //if player is still alive, player wins!
-    if (playerInfo.health > 0) {
-        window.alert("Great job, you've survived the game! You now have a score of " + playerInfo.money + ".");
+    // if player has more money than the high score, player has new high score
+    if (playerInfo.money < highScore) {
+        window.alert(playerInfo.name + " did not beat the high score of " + highScore);
     }
     else {
-        window.alert("You've lost your robot in battle.");
+        localStorage.setItem("highscore", playerInfo.money);
+        localStorage.setItem("name", playerInfo.name);
+
+        window.alert(playerInfo.name + " now has the high score, player has a new high score!");
     }
 
     // ask player if they'd like to play again
@@ -193,8 +204,21 @@ var randomNumber = function(min, max) {
     return value;
 };
 
+//function to set name
+var getPlayerName = function () {
+    var name = "";
+
+    while (name === "" || name === null) {
+        name = prompt("What is your robot's name?");
+
+        console.log("Your robot's name is " + name);
+        return name;
+    };
+}
+
+debugger;
 var playerInfo = {
-    name: window.prompt("What is your robot's name?"),
+    name: getPlayerName(),
     health: 100,
     attack: 10,
     money: 10,
@@ -241,12 +265,8 @@ var enemyInfo = [
 ];
 
 // start the game when the page loads
-//debugger;
+debugger;
 startGame();
 
-        // after the loop ends, player is either out of health or enemies
-        endGame();
-
-        // play again 
-        
-        startGame();
+// after the loop ends, player is either out of health or enemies
+endGame();
